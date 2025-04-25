@@ -9,4 +9,4 @@ host_cloud_dest: C:\Users\vagrant\dest
 host_cloud_src: C:\Users\vagrant\src
 host_onprem_rclone_config: C:\Program Files\rclone\rclone-host-onprem.conf
 host_onprem_rclone_log: C:\Program Files\rclone\rclone-host-onprem.log
-log-level: INFO
+log_level: INFO

@@ -25,6 +25,8 @@ config.vm.define "win1" do |win1|
   
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/playbook.yml"
+    ansible.extra_vars = {
+      "ansible_winrm_scheme" => "http"
+    }
   end
 end
-

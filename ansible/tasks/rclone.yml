@@ -10,29 +10,32 @@
     - name: Unarchive rclone zip
       community.windows.win_unzip:
         src: '%TEMP%\rclone.zip'
-        dest: C:\Program Files\rclone\
+        dest: C:\Program Files
 
     - name: copy configuration
       ansible.windows.win_template:
-        src: /template/rclone-host-onprem.conf.j2
-        dest: C:\Program Files\rclone\rclone-host-onprem.conf
+        src: template/rclone-host-onprem.conf.j2
+        dest: '%APPDATA%\rclone\rclone.conf'
 
     - name: Apply configuration
-      ansible.windows.win_command:
-        cmd: rclone.exe config --file=C:\Program Files\rclone\rclone-host-onprem.conf
-        chdir: C:\Program Files\rclone 
+      ansible.windows.win_environment:
+        name: RCLONE_CONFIG
+        value: C:\Program Files\rclone-v1.69.1-windows-amd64\rclone-host-onprem.conf
+        level: machine
+        state: present
 
-    - name: Ensure rclone is in the PATH
+    - name: Add rclone to the PATH
       ansible.windows.win_path:
-        elements: C:\Program Files\rclone\
+        elements: C:\Program Files\rclone-v1.69.1-windows-amd64
+
 -
   name: Create a task to run rclone
   block:
     - name: Create a task to pull data from on-prem
-      ansible.windows.win_scheduled_task:
+      community.windows.win_scheduled_task:
         name: rclone-pull
         description: "Rclone sync task to pull data from on-prem"
-        actions: rclone.exe sync {{ name_remote }}:{{ host_onprem_src }} {{ host_cloud_dest }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log-level }}
+        actions: rclone.exe sync {{ name_remote }}:{{ host_onprem_src }} {{ host_cloud_dest }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
         triggers:
           - type: time
             start_boundary: '2023-10-01T00:00:00'
@@ -43,10 +46,10 @@
         multiple_instances: 2
 
     - name: Create a task to push data to on-prem
-      ansible.windows.win_scheduled_task:
+      community.windows.win_scheduled_task:
         name: rclone-push
         description: "Rclone sync task to push data to on-prem"
-        actions: rclone.exe sync {{ host_cloud_src }} {{ name_remote }}:{{ host_onprem_src }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log-level }}
+        actions: rclone.exe sync {{ host_cloud_src }} {{ name_remote }}:{{ host_onprem_src }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
         triggers:
           - type: time
             start_boundary: '2023-10-01T00:00:00'
