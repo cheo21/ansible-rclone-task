@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - name: Apply conditional to all imported tasks
+      import_tasks: tasks/rclone.yml
+  vars_files:
+    - var/rclone-vars.yml
+

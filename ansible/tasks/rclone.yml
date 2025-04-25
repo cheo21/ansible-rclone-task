@@ -1,0 +1,57 @@
+---
+-
+  name: Install and configure rclone
+  block:
+    - name: Download rclone
+      ansible.windows.win_get_url:
+        url: https://github.com/rclone/rclone/releases/download/v1.69.1/rclone-v1.69.1-windows-amd64.zip
+        dest: '%TEMP%\rclone.zip'
+
+    - name: Unarchive rclone zip
+      community.windows.win_unzip:
+        src: '%TEMP%\rclone.zip'
+        dest: C:\Program Files\rclone\
+
+    - name: copy configuration
+      ansible.windows.win_template:
+        src: /template/rclone-host-onprem.conf.j2
+        dest: C:\Program Files\rclone\rclone-host-onprem.conf
+
+    - name: Apply configuration
+      ansible.windows.win_command:
+        cmd: rclone.exe config --file=C:\Program Files\rclone\rclone-host-onprem.conf
+        chdir: C:\Program Files\rclone 
+
+    - name: Ensure rclone is in the PATH
+      ansible.windows.win_path:
+        elements: C:\Program Files\rclone\
+-
+  name: Create a task to run rclone
+  block:
+    - name: Create a task to pull data from on-prem
+      ansible.windows.win_scheduled_task:
+        name: rclone-pull
+        description: "Rclone sync task to pull data from on-prem"
+        actions: rclone.exe sync {{ name_remote }}:{{ host_onprem_src }} {{ host_cloud_dest }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log-level }}
+        triggers:
+          - type: time
+            start_boundary: '2023-10-01T00:00:00'
+            enabled: yes
+            repetition:
+              interval: 'PT5M'
+              stop_at_duration_end: false
+        multiple_instances: 2
+
+    - name: Create a task to push data to on-prem
+      ansible.windows.win_scheduled_task:
+        name: rclone-push
+        description: "Rclone sync task to push data to on-prem"
+        actions: rclone.exe sync {{ host_cloud_src }} {{ name_remote }}:{{ host_onprem_src }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log-level }}
+        triggers:
+          - type: time
+            start_boundary: '2023-10-01T00:00:00'
+            enabled: yes
+            repetition:
+              interval: 'PT5M'
+              stop_at_duration_end: false
+        multiple_instances: 2

@@ -1,0 +1,12 @@
+---
+name_remote: win2
+host_onprem: 192.168.56.102
+host_onprem_user: vagrant
+host_onprem_password: vagrant
+host_onprem_dest: C:\Users\vagrant\dest
+host_onprem_src: C:\Users\vagrant\src
+host_cloud_dest: C:\Users\vagrant\dest
+host_cloud_src: C:\Users\vagrant\src
+host_onprem_rclone_config: C:\Program Files\rclone\rclone-host-onprem.conf
+host_onprem_rclone_log: C:\Program Files\rclone\rclone-host-onprem.log
+log-level: INFO
