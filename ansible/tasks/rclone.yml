@@ -14,13 +14,13 @@
 
     - name: copy configuration
       ansible.windows.win_template:
-        src: template/rclone-host-onprem.conf.j2
+        src: template/rclone-host-onprem-conf.j2
         dest: '%APPDATA%\rclone\rclone.conf'
 
     - name: Apply configuration
       ansible.windows.win_environment:
         name: RCLONE_CONFIG
-        value: {{ host_onprem_rclone_config }}
+        value: "{{ host_onprem_rclone_config }}"
         level: machine
         state: present
 
