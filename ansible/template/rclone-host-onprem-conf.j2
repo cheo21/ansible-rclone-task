@@ -1,0 +1,24 @@
+[{{ name_remote }}]
+type = sftp
+host = {{ host_onprem }}
+user = {{ host_onprem_user }}
+pass = htb2BJ2itPjl_zCv11chED8PPh10u6E
+shell_type = cmd
+md5sum_command = none
+sha1sum_command = none
+
+[host_onprem_src]
+type = alias
+remote = {{ name_remote }}:{{ host_onprem_src }}
+
+[host_onprem_dest]
+type = alias
+remote = {{ name_remote }}:{{ host_onprem_dest }}
+
+[host_cloud_src]
+type = alias
+remote = {{ host_cloud_src }}
+
+[host_cloud_dest]
+type = alias
+remote = {{ host_cloud_dest }}
