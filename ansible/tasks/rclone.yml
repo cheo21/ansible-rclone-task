@@ -34,6 +34,11 @@
       ansible.windows.win_path:
         elements: C:\Program Files\rclone-v1.69.1-windows-amd64
 
+    - name: Create logs directory
+      ansible.windows.win_file:
+            path: C:\Program Files\rclone-v1.69.1-windows-amd64\logs
+            state: directory
+
 -
   name: Create a task to run rclone
   block:
@@ -43,7 +48,7 @@
         description: "Rclone sync task to pull data from on-prem"
         actions:
           - path: rclone.exe
-            arguments: sync host_onprem_src host_cloud_dest --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
+            arguments: sync host_onprem_src host_cloud_dest --log-file={{ onprem_to_cloud_log }} --log-level {{ log_level }}
         triggers:
           - type: time
             start_boundary: '2023-10-01T00:00:00'
@@ -59,7 +64,7 @@
         description: "Rclone sync task to push data to on-prem"
         actions: 
           - path: rclone.exe 
-            arguments: sync {{ host_cloud_src }} {{ name_remote }}:{{ host_onprem_src }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
+            arguments: sync host_cloud_src host_onprem_dest --log-file={{ cloud_to_onprem_log }} --log-level {{ log_level }}
         triggers:
           - type: time
             start_boundary: '2023-10-01T00:00:00'

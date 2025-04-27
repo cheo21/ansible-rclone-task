@@ -1,0 +1,31 @@
+---
+- name: Install Log-Rotate
+  community.windows.win_psmodule:
+    name: Log-Rotate
+    repository: PSGallery
+    state: present
+
+- name: Create configs directory
+  ansible.windows.win_file:
+    path: C:\configs
+    state: directory
+
+- name: Copy configuration file
+  ansible.windows.win_template:
+    src: /template/log-rotate-conf.j2
+    dest: C:\configs\log-rotate.conf
+
+- name: Create a task to run Log-Rotate
+  ansible.windows.win_scheduled_task:
+    name: Log-Rotate
+    description: "Log-Rotate task to rotate logs everyday"
+    actions:
+      - path: Log-Rotate
+    triggers:
+      - type: time
+        start_boundary: '2023-10-01T00:00:00'
+        enabled: yes
+        repetition:
+          interval: 'PT5M'
+          stop_at_duration_end: false
+    multiple_instances: 2
