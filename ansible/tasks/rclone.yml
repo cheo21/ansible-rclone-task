@@ -12,10 +12,16 @@
         src: '%TEMP%\rclone.zip'
         dest: C:\Program Files
 
-    - name: copy configuration
-      ansible.windows.win_template:
-        src: template/rclone-host-onprem-conf.j2
-        dest: '%APPDATA%\rclone\rclone.conf'
+    - name: Copy configuration
+      block:
+        - name: Create rclone config directory
+          ansible.windows.win_file:
+            path: '%APPDATA%\rclone'
+            state: directory
+        - name:  Copy rclone config
+          ansible.windows.win_template:
+            src: template/rclone-host-onprem-conf.j2
+            dest: '%APPDATA%\rclone\rclone.conf'
 
     - name: Apply configuration
       ansible.windows.win_environment:
@@ -35,7 +41,9 @@
       community.windows.win_scheduled_task:
         name: rclone-pull
         description: "Rclone sync task to pull data from on-prem"
-        actions: rclone.exe sync host_onprem_src host_cloud_dest --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
+        actions:
+          - path: rclone.exe
+            arguments: sync host_onprem_src host_cloud_dest --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
         triggers:
           - type: time
             start_boundary: '2023-10-01T00:00:00'
@@ -49,7 +57,9 @@
       community.windows.win_scheduled_task:
         name: rclone-push
         description: "Rclone sync task to push data to on-prem"
-        actions: rclone.exe sync {{ host_cloud_src }} {{ name_remote }}:{{ host_onprem_src }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
+        actions: 
+          - path: rclone.exe 
+            arguments: sync {{ host_cloud_src }} {{ name_remote }}:{{ host_onprem_src }} --log-file={{ host_onprem_rclone_log }} --log-level {{ log_level }}
         triggers:
           - type: time
             start_boundary: '2023-10-01T00:00:00'
