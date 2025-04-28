@@ -1,7 +1,7 @@
 - hosts: all
   tasks:
-    - name: rclone
-      import_tasks: tasks/rclone.yml
+    # - name: rclone
+    #   import_tasks: tasks/rclone.yml
     - name: Log-Rotate
       import_tasks: tasks/log-rotate.yml
   vars_files:

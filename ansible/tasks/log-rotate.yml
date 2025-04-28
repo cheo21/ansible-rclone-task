@@ -1,26 +1,29 @@
 ---
-- name: Install Log-Rotate
-  community.windows.win_psmodule:
-    name: Log-Rotate
-    repository: PSGallery
-    state: present
+- name: Verificar e instalar Log-Rotate si no está presente
+  ansible.windows.win_shell: |
+    if (!(Get-Module -ListAvailable -Name Log-Rotate)) {
+      Install-Module -Name Log-Rotate -Repository PSGallery -Force -Scope AllUsers 
+    }
+
 
 - name: Create configs directory
   ansible.windows.win_file:
-    path: C:\configs
+    path: '%APPDATA%\log-rotate'
     state: directory
 
 - name: Copy configuration file
   ansible.windows.win_template:
-    src: /template/log-rotate-conf.j2
-    dest: C:\configs\log-rotate.conf
+    src: template/log-rotate-conf.j2
+    dest: '%APPDATA%\log-rotate\log-rotate.conf'
 
 - name: Create a task to run Log-Rotate
-  ansible.windows.win_scheduled_task:
+  community.windows.win_scheduled_task:
     name: Log-Rotate
     description: "Log-Rotate task to rotate logs everyday"
     actions:
-      - path: Log-Rotate
+      - path: powershell.exe
+        arguments: >
+          -NoProfile -WindowStyle Hidden -Command "Import-Module Log-Rotate; Log-Rotate -Config `$env:APPDATA\log-rotate\log-rotate.conf -State `$env:APPDATA\log-rotate\Log-Rotate.status -Verbose >> `$env:APPDATA\log-rotate\Log-Rotate.log"
     triggers:
       - type: time
         start_boundary: '2023-10-01T00:00:00'

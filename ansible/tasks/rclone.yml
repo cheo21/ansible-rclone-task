@@ -29,7 +29,7 @@
         value: "{{ host_onprem_rclone_config }}"
         level: machine
         state: present
-
+        
     - name: Add rclone to the PATH
       ansible.windows.win_path:
         elements: C:\Program Files\rclone-v1.69.1-windows-amd64
