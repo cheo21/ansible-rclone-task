@@ -11,9 +11,9 @@ host_onprem_dest: C:\Users\vagrant\dest
 host_cloud_src: C:\Users\vagrant\src
 host_cloud_dest: C:\Users\vagrant\dest
 
-host_onprem_rclone_config: C:\Program Files\rclone-v1.69.1-windows-amd64\rclone-host-onprem.conf
+host_onprem_rclone_config: C:\Program Files\rclone-v1.69.1-windows-amd64\rclone.conf
 
 onprem_to_cloud_log: C:\Program Files\rclone-v1.69.1-windows-amd64\logs\onprem_to_cloud.log
 cloud_to_onprem_log: C:\Program Files\rclone-v1.69.1-windows-amd64\logs\cloud_to_onprem.log
 
-log_level: NOTICE
+log_level: INFO

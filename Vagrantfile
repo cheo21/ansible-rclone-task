@@ -10,6 +10,14 @@ config.vm.define "win1" do |win1|
       vb.memory = 3048
       vb.cpus = 2
     end
+
+    config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/playbook.yml"
+      # ansible.inventory_path = "ansible/inventory.ini"
+      ansible.extra_vars = {
+        "ansible_winrm_scheme" => "http"
+      }
+    end
   end
 
  config.vm.define "win2" do |win2|
@@ -21,12 +29,5 @@ config.vm.define "win1" do |win1|
       vb.memory = 3048
       vb.cpus = 2
     end
-  end
-  
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "ansible/playbook.yml"
-    ansible.extra_vars = {
-      "ansible_winrm_scheme" => "http"
-    }
   end
 end

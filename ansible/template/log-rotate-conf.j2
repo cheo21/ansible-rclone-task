@@ -1,7 +1,8 @@
 {{ onprem_to_cloud_log }} {{ cloud_to_onprem_log }} {
-    rotate 5
+    rotate 1
     noolddir
     daily
+    missingok
     copytruncate
     nocompress
 }
