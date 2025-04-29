@@ -1,7 +1,8 @@
-- hosts: all
+- hosts: win1
   tasks:
-    - name: Apply conditional to all imported tasks
+    - name: rclone
       import_tasks: tasks/rclone.yml
+    - name: Log-Rotate
+      import_tasks: tasks/log-rotate.yml
   vars_files:
     - var/rclone-vars.yml
-
