@@ -24,13 +24,11 @@
       register: rclone_extracted_dir
 
     - name: Move extracted directory to C:\bin
-      ansible.windows.win_powershell:
-        script: |
-          Move-Item -Path "{{ rclone_extracted_dir.files[0].path }}" -Destination "{{ rclone_dir_path }}" -Force
+      ansible.windows.win_shell: move "{{ rclone_extracted_dir.files[0].path }}" "{{ rclone_dir_path }}"
 
     - name:  Copy rclone config
       ansible.windows.win_template:
-        src: template/rclone-host-onprem-conf.j2
+        src: template/rclone-conf.j2
         dest: '{{ rclone_config_path }}'
 
     - name: Apply configuration
