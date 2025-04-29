@@ -18,4 +18,4 @@ host_cloud_dest: C:\\Users\\vagrant\\dest
 onprem_to_cloud_log: "{{ rclone_dir_path }}\\logs\\onprem_to_cloud.log"
 cloud_to_onprem_log: "{{ rclone_dir_path }}\\logs\\cloud_to_onprem.log"
 
-log_level: INFO
+log_level: NOTICE

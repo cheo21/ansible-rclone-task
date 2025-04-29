@@ -22,12 +22,11 @@
     actions:
       - path: powershell.exe
         arguments: >
-          -NoProfile -WindowStyle Hidden -Command "Import-Module Log-Rotate; Log-Rotate -Config `$env:APPDATA\log-rotate\log-rotate.conf -State `$env:APPDATA\log-rotate\Log-Rotate.status -Verbose >> `$env:APPDATA\log-rotate\Log-Rotate.log"
+          -NoProfile -WindowStyle Hidden -Command "Import-Module Log-Rotate; Log-Rotate -Config `%APPDATA%\log-rotate\log-rotate.conf -State `%APPDATA%\log-rotate\Log-Rotate.status -Verbose >> `%APPDATA%\log-rotate\Log-Rotate.log"
     triggers:
-      - type: time
-        start_boundary: '2023-10-01T00:00:00'
+      - type: weekly
+        days_of_week:
+          - Sunday
+        start_boundary: '2023-10-01T03:00:00'
         enabled: yes
-        repetition:
-          interval: 'PT5M'
-          stop_at_duration_end: false
     multiple_instances: 2
